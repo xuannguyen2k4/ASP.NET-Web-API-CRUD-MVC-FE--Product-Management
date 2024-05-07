@@ -1,0 +1,330 @@
+﻿@{
+
+    ViewData["Title"] = "DANH SÁCH NHÓM HÀNG HÓA";
+}
+
+<h1 style="color:red">@ViewData["Title"]</h1>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="//cdn.datatables.net/2.0.5/js/dataTables.min.js"></script>
+<link rel="stylesheet" href="//cdn.datatables.net/2.0.5/css/dataTables.dataTables.min.css" />
+
+
+
+<style>
+    h1.red:hover {
+        background-color:aqua;
+    }
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .btnEdit, .btnDelete {
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        margin-right: 5px;
+        border-radius: 5px;
+        transition: opacity 0.3s ease;
+    }
+
+    .btnEdit {
+        background-color: #007bff;
+    }
+
+    .btnDelete {
+        background-color: #dc3545;
+    }
+
+        .btnEdit:hover, .btnDelete:hover {
+            opacity: 0.7;
+        }
+
+    #editForm h2 {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .btnSave, .btnCancel, .btnCreate {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 10px;
+    }
+
+    .btnSave, .btnCreate {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btnCancel {
+        background-color: #f44336;
+        color: white;
+    }
+
+        .btnSave:hover, .btnCancel:hover {
+            opacity: 0.8;
+        }
+
+    #editFormContainer {
+        display: none;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: black;
+    }
+
+    #editForm {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 30%;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: cornflowerblue;
+        z-index: 1001;
+    }
+
+    input {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .button-containers {
+        display: flex;
+    }
+
+    #addFormContainer {
+        display: none;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: black;
+    }
+
+    #addForm {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 30%;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: cornflowerblue;
+        z-index: 1001;
+    }
+
+    #btnAdd {
+        background-color: green;
+        padding: 10px;
+        font-weight: 600;
+        border-radius: 5px;
+        color:white;
+    }
+</style>
+
+
+<button type="submit" id="btnAdd">Thêm nhóm hàng hóa</button>
+
+<div id="addFormContainer" style="display: none;">
+    <form id="addForm">
+        <div><input type="hidden" id="nhhId" name="nhhId" placeholder="ID nhóm hàng hóa" required></div>
+        <div><input type="text" id="nhhMa" name="nhhMa" placeholder="Mã" required></div>
+        <div><input type="text" id="nhhTen" name="nhhTen" placeholder="Tên" required></div>
+        <div class="button-containers">
+            <button type="submit" class="btnCancel">Hủy</button>
+            <button type="submit" class="btnCreate">Thêm</button>
+        </div>
+    </form>
+</div>
+
+
+<table id="tbl2">
+    <thead>
+        <tr>
+            <th>ID nhóm hàng hóa</th>
+            <th>Mã</th>
+            <th>Tên nhóm hàng</th>
+        </tr>
+    </thead>
+</table>
+
+<div id="editFormContainer" style="display:none" ;>
+    <form id="editForm">
+        <h2> Edit Form</h2>
+        <input type="hidden" id="nhhId" name="nhhId" />
+        <div>
+            <label for="nhhMa"> Mã:</label>
+            <input type="text" id="nhhMa" name="nhhMa" placeholder="Mã" required />
+        </div>
+        <div>
+            <label for="nhhTen"> Tên nhóm hàng:</label>
+            <input type="text" id="nhhTen" name="nhhTen" placeholder="Tên" required />
+        </div>
+        <div class="button-containers">
+            <button type="submit" class="btnSave">Lưu</button>
+            <button type="submit" class="btnCancel">Hủy</button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    //get information
+    $(document).ready(function () {
+        var url = "http://localhost:5276/TblNhomhanghoa/Get";
+
+        //khởi tạo DataTable
+        $.get(url, {}, function (kq) {
+            var dulieu = kq.data;
+            table_direct = new DataTable('#tbl2',
+                {
+                    data: dulieu,
+                    columns: [
+                        { "data": "nhhId" },
+                        { "data": "nhhMa" },
+                        { "data": "nhhTen" },
+                        {
+                            "data": null,
+                            "defaultContent": "<div class='button-container'><button class='btnEdit'>Sửa</button><button class='btnDelete'>Xóa</button></div>"
+                        }
+                    ]
+                }
+            );
+
+            //CREATE METHOD ======================================================
+            $('#btnAdd').on('click', function () {
+                // Clear the form fields
+                $('#addForm input[type="text"]').val('');
+
+                // Show the form
+                $('#addFormContainer').show();
+            });
+
+            // Handle form submission
+            $('#addForm').on('submit', function (e) {
+                e.preventDefault();
+
+                var formData = $(this).serialize();
+
+                //Get the created data from the form
+                var createData = {
+                    nhhMa: $('#addForm #nhhMa').val(),
+                    nhhTen: $('#addForm #nhhTen').val(),
+                };
+
+                console.log("Mảng lấy được là:", createData);
+                        
+                var url = "http://localhost:5276/TblNhomhanghoa/Insert"; 
+                $.post(url + "?ma=" + $("#nhhMa").val() + "&ten=" + $("#nhhTen").val(), {
+                      }, function (response) {
+                           console.log("Thêm nhóm hàng hóa mới thành công:", response);
+                           location.reload();
+                      }).fail(function (xhr, status, error) {
+                           console.error("Có lỗi xảy ra: ", error);
+                      });
+            });
+
+            //  "Cancel" button
+            $('#addForm .btnCancel').on('click', function (e) {
+                e.preventDefault();
+
+                // Hide the form
+                $('#addForm').hide();
+            });
+
+
+            // EDIT METHOD ===========================================================
+            $('#tbl2 tbody').on('click', '.btnEdit', function () {
+                var data = table_direct.row($(this).parents('tr')).data();
+
+                // Fill the form with the current data
+                $('#editForm #nhhId').val(data.nhhId);
+                $('#editForm #nhhMa').val(data.nhhMa);
+                $('#editForm #nhhTen').val(data.nhhTen);
+
+                // Show the form
+                $('#editFormContainer').show();
+
+            });
+
+            // Handle form submission
+            $('#editForm').on('submit', function (e) {
+                e.preventDefault();
+
+                // Get the updated data from the form
+                var updatedData = {
+                    nhhId: $('#editForm #nhhId').val(),
+                    nhhMa: $('#editForm #nhhMa').val(),
+                    nhhTen: $('#editForm #nhhTen').val(),
+                };
+
+                console.log("Chuỗi lấy được là:", updatedData);
+
+                // Send a request to the server to update the data
+                var url = "http://localhost:5276/TblNhomhanghoa/Update";
+                $.post(url + "?nhhId=" + $("#editForm #nhhId").val() + "&ma=" + $("#editForm #nhhMa").val() + "&ten=" + $("#editForm #nhhTen").val() , {
+                }, function (response) {
+                    console.log("Cập nhật thành công:", response);
+                    location.reload();
+
+                }).fail(function (xhr, status, error) {
+                    console.error("Có lỗi xảy ra khi cập nhật hàng hóa:", error);
+                });
+            });
+            
+
+            // "Cancel" button
+            $('#editForm .btnCancel').on('click', function (e) {
+                e.preventDefault();
+
+                // Hide the form
+                $('#editForm').hide();
+            });
+
+
+            // DELETE METHOD ===============================
+            $('#tbl2 tbody').on('click', '.btnDelete', function () {
+                var data = table_direct.row($(this).parents('tr')).data();
+
+                var nhhId = data.nhhId; // Get the product ID
+
+                // Send a DELETE request to the server endpoint
+                if (confirm("Bạn có muốn xóa nhóm hàng hóa này không?")) {
+                    $.ajax({
+                        url: 'http://localhost:5276/TblNhomhanghoa/Delete?nhhId=' + nhhId,
+                        type: 'DELETE',
+                        success: function () {
+                            table_direct.ajax.reload();
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.error('Lỗi xóa nhóm hàng hóa: ', textStatus, errorThrown);
+                        }
+                    });
+                }
+            });
+
+        });
+    });
+
+</script>

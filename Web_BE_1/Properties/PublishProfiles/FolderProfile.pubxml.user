@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>D:\Publish</_PublishTargetUrl>
+    <History>True|2024-04-28T18:13:36.6623096Z;True|2024-04-29T00:58:02.9806099+07:00;True|2024-04-29T00:47:51.8330918+07:00;True|2024-04-29T00:24:42.6603396+07:00;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="DefaultConnection">
+      <Value>Data Source=SQL5113.site4now.net%3bInitial Catalog=db_aa655b_xuannguyen%3bUser Id=db_aa655b_xuannguyen_admin%3bPassword=1234567%3bMultipleActiveResultSets=True%3bApp=EntityFramework&amp;quot%3b</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+  <ItemGroup>
+    <EFMigrations Include="Web_BE_1.ModelFromSQL.DBContextBanhang">
+      <Value>Data Source=SQL5113.site4now.net%3bInitial Catalog=db_aa655b_xuannguyen%3bUser Id=db_aa655b_xuannguyen_admin%3bPassword=1234567%3bMultipleActiveResultSets=True%3bApp=EntityFramework&amp;quot%3b</Value>
+    </EFMigrations>
+  </ItemGroup>
+</Project>

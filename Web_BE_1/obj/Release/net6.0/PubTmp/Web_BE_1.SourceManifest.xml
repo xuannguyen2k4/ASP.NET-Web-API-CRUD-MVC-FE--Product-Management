@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sitemanifest>
+  <IisApp path="D:\BE\WEB_BE_1\Web_BE_1\obj\Release\net6.0\PubTmp\Out\" />
+  <dbfullsql path="D:\BE\WEB_BE_1\Web_BE_1\obj\Release\net6.0\PubTmp\EFSQLScripts\Web_BE_1.ModelFromSQL.DBContextBanhang.sql" />
+</sitemanifest>

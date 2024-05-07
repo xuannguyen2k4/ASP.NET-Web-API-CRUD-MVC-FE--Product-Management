@@ -1,0 +1,361 @@
+﻿@{
+
+    ViewData["Title"] = "DANH SÁCH HÀNG HÓA";
+}
+
+
+<h1 style="color:darkred">@ViewData["Title"]</h1>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="//cdn.datatables.net/2.0.5/js/dataTables.min.js"></script>
+<link rel="stylesheet" href="//cdn.datatables.net/2.0.5/css/dataTables.dataTables.min.css" />
+
+
+
+<style>
+    .button-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .btnEdit, .btnDelete {
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        margin-right: 5px;
+        border-radius: 5px;
+        transition: opacity 0.3s ease;
+    }
+
+    .btnEdit {
+        background-color: #007bff;
+    }
+
+    .btnDelete {
+        background-color: #dc3545;
+    }
+
+        .btnEdit:hover, .btnDelete:hover {
+            opacity: 0.7;
+        }
+
+    #editForm h2 {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .btnSave, .btnCancel, .btnCreate {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        margin: 10px;
+    }
+
+    .btnSave, .btnCreate {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btnCancel {
+        background-color: #f44336;
+        color: white;
+    }
+
+        .btnSave:hover, .btnCancel:hover {
+            opacity: 0.8;
+        }
+
+    #editFormContainer {
+        display: none;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: black;
+    }
+
+    #editForm {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 30%;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: cornflowerblue;
+        z-index: 1001;
+    }
+
+    input {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .button-containers {
+        display: flex;
+    }
+
+    #addFormContainer {
+        display: none;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: black;
+    }
+
+    #addForm {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 30%;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: cornflowerblue;
+        z-index: 1001;
+    }
+
+    #btnAdd {
+        background-color: yellow;
+        padding: 10px;
+        font-weight: 600;
+        border-radius: 5px;
+    }
+</style>
+
+
+<button type="submit" id="btnAdd">Thêm hàng hóa</button>
+
+<div id="addFormContainer" style="display: none;">
+    <form id="addForm">
+        <div><input type="hidden" id="hhId" name="hhId" /></div>
+        <div><input type="text" id="hhNhhId" name="hhNhhId" placeholder="ID nhóm" required></div>
+        <div><input type="text" id="hhMa" name="hhMa" placeholder="Mã" required></div>
+        <div><input type="text" id="hhTen" name="hhTen" placeholder="Tên hàng hóa" required></div>
+        <div><input type="number" id="hhGianhap" name="hhGianhap" placeholder="Gía nhập" required /></div>
+        <div><input type="number" id="hhGiaban" name="hhGiaban" placeholder="Gía bán" required /></div>
+        <div class="button-containers">
+            <button type="submit" class="btnCancel">Hủy</button>
+            <button type="submit" class="btnCreate">Thêm</button>
+        </div>
+    </form>
+</div>
+
+
+<table id="tbl1">
+    <thead>
+        <tr>
+            <th>ID hàng hóa</th>
+            <th>ID nhóm</th>
+            <th>Mã</th>
+            <th>Tên hàng</th>
+            <th>Giá nhập</th>
+            <th>Giá bán</th>
+        </tr>
+    </thead>
+</table>
+
+<div id="editFormContainer" style="display:none" ;>
+    <form id="editForm">
+        <h2> Edit Form</h2>
+        <input type="hidden" id="hhId" name="hhId" />
+        <div>
+            <label for="hhNhhId"> ID nhóm:</label>
+            <input type="text" id="hhNhhId" name="hhNhhId" placeholder="ID nhóm" required />
+        </div>
+        <div>
+            <label for="hhMa"> Mã:</label>
+            <input type="text" id="hhMa" name="hhMa" placeholder="Mã" required />
+        </div>
+        <div>
+            <label for="hhTen"> Tên hàng:</label>
+            <input type="text" id="hhTen" name="hhTen" placeholder="Tên" required />
+        </div>
+        <div>
+            <label for="hhGianhap"> Giá nhập:</label>
+            <input type="number" id="hhGianhap" name="hhGianhap" placeholder="Giá nhập" required />
+        </div>
+        <div>
+            <label for="hhGiaban"> Giá bán:</label>
+            <input type="number" id="hhGiaban" name="hhGiaban" placeholder="Giá bán" required />
+        </div>
+        <div class="button-containers">
+            <button type="submit" class="btnSave">Lưu</button>
+            <button type="submit" class="btnCancel">Hủy</button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    //get information
+    $(document).ready(function () {
+        var url = "http://localhost:5276/TblHanghoa/Get";
+
+        //khởi tạo DataTable
+        $.get(url, {}, function (kq) {
+            var dulieu = kq.data;
+            table_direct = new DataTable('#tbl1',
+                {
+                    data: dulieu,
+                    columns: [
+                        { "data": "hhId" },
+                        { "data": "hhNhhId" },
+                        { "data": "hhMa" },
+                        { "data": "hhTen" },
+                        { "data": "hhGianhap" },
+                        { "data": "hhGiaban" },
+                        {
+                            "data": null,
+                            "defaultContent": "<div class='button-container'><button class='btnEdit'>Sửa</button><button class='btnDelete'>Xóa</button></div>"
+                        }
+                    ]
+                }
+            );
+
+            //CREATE METHOD =============================================
+            $('#btnAdd').on('click', function () {
+                // Clear the form fields
+                $('#addForm input[type="text"]').val('');
+                $('#addForm input[type="number"]').val('');
+
+                // Show the form
+                $('#addFormContainer').show();
+            });
+
+            // Handle form submission
+            $('#addForm').on('submit', function (e) {
+                e.preventDefault();
+
+                var formData = $(this).serialize();
+             
+                //Get the created data from the form
+                var createData = {
+                    hhNhhId: $('#addForm #hhNhhId').val(),
+                    hhMa: $('#addForm #hhMa').val(),
+                    hhTen: $('#addForm #hhTen').val(),
+                    hhGianhap: $('#addForm #hhGianhap').val(),
+                    hhGiaban: $('#addForm #hhGiaban').val(),
+                };
+
+                console.log("Mảng nhận được là:", createData);
+
+                // Send a request to the server to create the data
+                var url = "http://localhost:5276/TblHanghoa/Insert"; 
+                $.post(url + "?idnhom=" + $("#hhNhhId").val() + "&ma=" + $("#hhMa").val() + "&ten=" + $("#hhTen").val()
+                           + "&gianhap=" + parseFloat($("#hhGianhap").val()) + "&giaban=" + parseFloat($("#hhGiaban").val()), {
+                        }, function (response) {
+                            console.log("Thêm hàng hóa mới thành công:", response);
+                            location.reload();
+                    }).fail(function (xhr, status, error) {
+                            console.error("Có lỗi xảy ra: ", error);
+                });                 
+            });
+
+            //  "Cancel" button
+            $('#addForm .btnCancel').on('click', function (e) {
+                e.preventDefault();
+
+                // Hide the form
+                $('#addForm').hide();
+            });
+
+
+            // EDIT METHOD ===================================================
+            $('#tbl1 tbody').on('click', '.btnEdit', function () {
+                var data = table_direct.row($(this).parents('tr')).data();
+
+                // Fill the form with the current data
+                $('#editForm #hhId').val(data.hhId);
+                $('#editForm #hhNhhId').val(data.hhNhhId);
+                $('#editForm #hhMa').val(data.hhMa);
+                $('#editForm #hhTen').val(data.hhTen);
+                $('#editForm #hhGianhap').val(data.hhGianhap);
+                $('#editForm #hhGiaban').val(data.hhGiaban);
+
+                // Show the form
+                $('#editFormContainer').show();
+
+            });
+
+            // Handle form submission
+            $('#editForm').on('submit', function (e) {
+                e.preventDefault();
+
+
+                // Get the updated data from the form
+                var updatedData = {
+                    hhId: $('#editForm #hhId').val(),
+                    hhNhhId: $('#editForm #hhNhhId').val(),
+                    hhMa: $('#editForm #hhMa').val(),
+                    hhTen: $('#editForm #hhTen').val(),
+                    hhGianhap: $('#editForm #hhGianhap').val(),
+                    hhGiaban: $('#editForm #hhGiaban').val(),
+                };
+
+                console.log("Chuỗi lấy được là:", updatedData);
+
+                var url = "http://localhost:5276/TblHanghoa/Update";
+                $.post(url + "?hhId=" + $("#editForm #hhId").val() + "&idnhom=" + $("#editForm #hhNhhId").val() + "&ma=" + $("#editForm #hhMa").val() + "&ten=" + $("#editForm #hhTen").val()
+                    + "&gianhap=" + $("#editForm #hhGianhap").val() + "&giaban=" + $("#editForm #hhGiaban").val(), {
+                    }, function (response) {
+                       console.log("Cập nhật thành công:", response);
+                       location.reload();
+
+                    }).fail(function (xhr, status, error) {
+                       console.error("Có lỗi xảy ra khi cập nhật hàng hóa:", error);
+                });
+            });
+
+
+            //  "Cancel" button
+            $('#editForm .btnCancel').on('click', function (e) {
+                e.preventDefault();
+
+                // Hide the form
+                $('#editForm').hide();
+            });
+
+
+            // DELETE METHOD =======================================================
+            $('#tbl1 tbody').on('click', '.btnDelete', function () {
+                var data = table_direct.row($(this).parents('tr')).data();
+
+                var hhId = data.hhId; // Get the product ID
+                var hhNhhId = data.hhNhhId;
+
+                // Send a DELETE request to the server endpoint
+                if (confirm("Bạn có muốn xóa hàng hóa này không?")) {
+                    $.ajax({
+                        url: 'http://localhost:5276/TblHanghoa/Delete?hhId=' + hhId + '&idnhom=' + hhNhhId,
+                        type: 'DELETE',
+                        success: function () {
+                            table_direct.ajax.reload();
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.error('Lỗi xóa hàng hóa: ', textStatus, errorThrown);
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+</script>
